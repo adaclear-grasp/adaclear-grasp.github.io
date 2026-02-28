@@ -1,0 +1,10 @@
+{"t_video_s":0,"step_id":1,"call":"move_to('starfruit')","reason":"Move to the starfruit first, as it is positioned close to the target apple and may obstruct grasping if not cleared.","error_code":"none"}
+{"t_video_s":1.607853,"step_id":2,"call":"lower()","reason":"Lower the arm to the working height to prepare for pulling the starfruit away from the target.","error_code":"none"}
+{"t_video_s":4.236566,"step_id":3,"call":"pull('right', 0.100)","reason":"Pull the starfruit to the right to move it away from the target apple area.","error_code":"none"}
+{"t_video_s":7.784052,"step_id":4,"call":"push('right', 0.100)","reason":"Push the starfruit further right to ensure sufficient clearance for grasping the apple.","error_code":"none"}
+{"t_video_s":10.15755,"step_id":5,"call":"inithand()","reason":"Reset the hand to the default open posture after the clearing operations, preparing for the grasp attempt.","error_code":"none"}
+{"t_video_s":13.347735,"step_id":6,"call":"lift()","reason":"Lift the arm to a safe height after clearing the starfruit, preparing to approach the target for grasping.","error_code":"none"}
+{"t_video_s":15.057675,"step_id":7,"call":"move_to('starfruit')","reason":"Reposition near the starfruit area where the target apple is located to align for grasping.","error_code":"none"}
+{"t_video_s":16.563441,"step_id":8,"call":"grasp()","reason":"The starfruit has been cleared from the workspace. Attempt to grasp the target apple now.","error_code":"none"}
+{"t_video_s":21.871911,"step_id":9,"call":"lift()","reason":"Lift the arm to confirm the apple has been successfully picked up.","error_code":"none"}
+{"t_video_s":23.793565,"step_id":10,"call":"done()","reason":"The target (apple) has been successfully grasped. The task is complete.","error_code":"none"}
