@@ -44,16 +44,46 @@ export const project: ProjectContent = {
   ],
 
   abstract:
-    "In densely cluttered environments, due to physical interference, visual occlusions, and unstable contacts, directly performing dexterous grasping on target objects often fails, while aggressive object singulation methods are difficult to guarantee safety in real-world settings. Therefore, enabling robots to adaptively choose between clearing clutter and directly grasping is crucial for achieving safe, robust, and efficient grasping.In this work, we propose AdaClearGrasp, a closed-loop dexterous grasping system based on vision-language models (VLMs) for densely cluttered scenes. AdaClearGrasp leverages a pretrained VLM to jointly interpret visual observations and textual task descriptions to determine whether interfering objects obstruct the target grasp. If interference is detected, the system generates a high-level planning skeleton to execute predefined atomic clearing skills; otherwise, it directly performs grasping to avoid unnecessary interactions and improve efficiency. For dexterous grasping, we train a reinforcement learning policy using the hand–object distance representation, enabling zero-shot dynamic dexterous grasping across diverse object geometries and physical properties. During execution, closed-loop visual feedback is used to monitor task progress, and failures trigger replanning to adapt subsequent actions.To systematically evaluate performance, we introduce \texttt{Clutter-Bench}, the first simulation benchmark for language-conditioned target dexterous grasping with graded clutter complexity. \texttt{Clutter-Bench} includes seven target objects with three clutter levels, yielding 210 task scenarios. We further conduct sim-to-real experiments on three target objects under three clutter levels, covering 18 scenarios. Results show that AdaClearGrasp achieves higher grasp success rates than baseline methods in densely cluttered environments.",
+    `In densely cluttered environments, physical interference,
+visual occlusions, and unstable contacts often cause direct
+dexterous grasping to fail, while aggressive singulation
+strategies may compromise safety. Enabling robots to
+adaptively decide whether to clear surrounding objects or
+directly grasp the target is therefore crucial for robust
+manipulation. We propose AdaClearGrasp, a closed-loop decision–execution
+framework for adaptive clearing and zero-shot dexterous
+grasping in densely cluttered environments. The framework
+formulates manipulation as a controllable high-level
+decision process that determines whether to directly grasp
+the target or first clear surrounding objects. A pretrained
+vision–language model (VLM) interprets visual observations
+and language task descriptions to reason about grasp
+interference and generate a high-level planning skeleton,
+which invokes structured atomic skills through a unified
+action interface. For dexterous grasping, we train a
+reinforcement learning policy with a relative hand–object
+distance representation, enabling zero-shot generalization
+across diverse object geometries and physical properties.
+During execution, visual feedback monitors outcomes and
+triggers replanning upon failures, forming a closed-loop
+correction mechanism. To evaluate language-conditioned dexterous grasping in
+clutter, we introduce Clutter-Bench, the first simulation
+benchmark with graded clutter complexity. It includes seven
+target objects across three clutter levels, yielding 210
+task scenarios. We further perform sim-to-real experiments
+on three objects under three clutter levels (18 scenarios).
+Results demonstrate that AdaClearGrasp significantly
+improves grasp success rates in densely cluttered
+environments.`,
 
   teaser: {
     title: "Teaser",
-    src: "/images/teaser.png",
+    src: "/images/teaser.webp",
     caption: "One-sentence teaser.",
   },
   pipeline: {
     title: "Pipeline",
-    src: "/images/pipeline.png",
+    src: "/images/pipeline.webp",
     caption: "pipeline overview.",
   },
 

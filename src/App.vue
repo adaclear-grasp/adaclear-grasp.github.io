@@ -8,7 +8,7 @@
 
       <div class="space-y-2">
         <p class="text-xl md:text-2xl text-gray-700 font-medium">
-          <template v-for="(author, index) in project.authors" :key="index">
+          <!-- <template v-for="(author, index) in project.authors" :key="index">
             <a v-if="author.homepage" :href="author.homepage" target="_blank" rel="noopener noreferrer"
               class="hover:underline hover:text-blue-600 transition">
               {{ author.name }}
@@ -23,10 +23,11 @@
             </sup>
 
             <span v-if="index < project.authors.length - 1">, </span>
-          </template>
+          </template> -->
+          Anonymous Author(s)
         </p>
 
-        <p class="text-xl text-gray-500">
+        <!-- <p class="text-xl text-gray-500">
           <template v-for="(aff, i) in project.affiliations" :key="i">
             <span class="mr-3">
               <sup class="text-[0.75em] align-super">{{ i + 1 }}</sup>
@@ -37,16 +38,16 @@
 
         <p v-if="project.authors.some(a => a.star)" class="text-base text-gray-500">
           * Equal contribution.
-        </p>
+        </p> -->
       </div>
 
-      <div class="flex justify-center gap-3 flex-wrap pt-2">
+      <!-- <div class="flex justify-center gap-3 flex-wrap pt-2">
         <a v-for="l in project.links" :key="l.label" class="px-5 py-2.5 text-base font-semibold rounded-xl border-2 border-blue-200
                  text-blue-700  hover:border-blue-400 transition-all duration-200 shadow-sm" :href="l.href"
           target="_blank" rel="noreferrer">
           {{ l.label }}
         </a>
-      </div>
+      </div> -->
     </header>
 
 
@@ -66,10 +67,10 @@
       <Vedios />
     </Section>
 
-    <Section title="Citation" accent="violet">
+    <!-- <Section title="Citation" accent="violet">
       <pre class="bg-gray-50 border-2 border-gray-200 rounded-2xl p-6 text-base overflow-x-auto text-gray-700 leading-relaxed font-mono"
       >{{ project.citationBibtex }}</pre>
-    </Section>
+    </Section> -->
 
     <footer class="pt-8 text-center text-sm text-gray-400 border-t border-gray-100">
       © {{ new Date().getFullYear() }} Project Page
