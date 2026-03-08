@@ -1,13 +1,11 @@
 <template>
   <section class="space-y-6">
     <div class="flex items-center gap-3">
-      <!-- 左侧彩色竖条 -->
       <span :class="['inline-block w-1.5 h-8 rounded-full flex-shrink-0', barColor]"></span>
       <h2 :class="['text-2xl md:text-3xl font-bold tracking-tight', titleColor]">
         {{ title }}
       </h2>
     </div>
-    <!-- 分隔线 -->
     <div :class="['h-px w-full', dividerColor]"></div>
     <slot />
   </section>
@@ -16,29 +14,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{
-  title: string
-  accent?:
-    | 'blue'
-    | 'indigo'
-    | 'sky'
-    | 'teal'
-    | 'violet'
-    | 'green'
-    | 'emerald'
-    | 'cyan'
-    | 'purple'
-    | 'pink'
-    | 'rose'
-    | 'red'
-    | 'orange'
-    | 'amber'
-    | 'yellow'
-    | 'lime'
-    | 'slate'
-}>()
-
-const palette: Record<string, { bar: string; title: string; divider: string }> = {
+// 1. 定义调色板对象并使用 as const
+// 这会让 TS 精确记录每一个 key，而不是通用的 string
+const palette = {
   // 蓝色系
   blue:    { bar: 'bg-blue-500',    title: 'text-blue-800',    divider: 'bg-blue-100' },
   indigo:  { bar: 'bg-indigo-500',  title: 'text-indigo-800',  divider: 'bg-indigo-100' },
@@ -65,9 +43,19 @@ const palette: Record<string, { bar: string; title: string; divider: string }> =
 
   // 中性色
   slate:   { bar: 'bg-slate-500',   title: 'text-slate-800',   divider: 'bg-slate-100' },
-}
+} as const
 
+// 2. 通过 keyof typeof 自动提取类型
+type AccentColor = keyof typeof palette
+
+const props = defineProps<{
+  title: string
+  accent?: AccentColor
+}>()
+
+// 3. 这里的 colors 将被推断为确定的对象，不再包含 undefined 的可能
 const colors = computed(() => palette[props.accent ?? 'blue'])
+
 const barColor = computed(() => colors.value.bar)
 const titleColor = computed(() => colors.value.title)
 const dividerColor = computed(() => colors.value.divider)
