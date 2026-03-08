@@ -1,3 +1,4 @@
+<!-- VedioRow.vue -->
 <template>
   <section class="space-y-5">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

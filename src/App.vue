@@ -59,11 +59,15 @@
       </p>
     </Section>
 
-    <Section title="Pipeline" accent="blue">
+    <Section title="Pipeline" accent="sky">
       <FigureBlock :title="project.pipeline.title" :src="project.pipeline.src" :caption="project.pipeline.caption" />
     </Section>
 
-    <Section title="Videos" accent="sky">
+    <Section title="GeoGrasp (Clutter Free)" accent="emerald">
+      <Grasp7Videos />
+    </Section>
+
+    <Section title="Videos" accent="cyan">
       <Vedios />
     </Section>
 
@@ -83,4 +87,5 @@ import Section from './components/Section.vue'
 import FigureBlock from './components/FigureBlock.vue'
 import Vedios from './components/Vedios.vue'
 import { project } from './content/project'
+import Grasp7Videos from './components/Grasp7Videos.vue';
 </script>

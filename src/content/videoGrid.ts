@@ -10,6 +10,7 @@ export interface RowSpec {
 export const OBSTACLE_OPTIONS: Obstacles[] = [2, 4, 6]
 
 export const ROWS: RowSpec[] = [
+
   { domain: 'real', object: 'apple', runs: [1, 2] },
   { domain: 'real', object: 'cube', runs: [1, 2] },
   { domain: 'real', object: 'mug', runs: [1, 2] },
