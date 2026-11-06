@@ -12,6 +12,7 @@
         <a href="#overview" class="hover:underline underline-offset-4">Overview</a>
         <a href="#harness" class="hover:underline underline-offset-4">Execution harness</a>
         <a href="#evaluation" class="hover:underline underline-offset-4">Evaluation</a>
+        <a href="#geograsp" class="hover:underline underline-offset-4">GeoGrasp</a>
         <a href="#demos" class="hover:underline underline-offset-4">Demos</a>
       </nav>
     </header>
@@ -40,10 +41,26 @@
           </div>
         </li>
       </ol>
+      <div class="space-y-5 pt-3">
+        <h3 class="text-xl font-semibold text-gray-900">Execution protocol</h3>
+        <div class="grid md:grid-cols-3 gap-5">
+          <article v-for="item in project.executionProtocol" :key="item.title" class="rounded-2xl bg-sky-50/60 p-5 space-y-3">
+            <h4 class="font-semibold text-sky-900">{{ item.title }}</h4>
+            <p class="text-sm leading-relaxed text-gray-700">{{ item.body }}</p>
+          </article>
+        </div>
+        <details class="rounded-xl border border-sky-100 px-5 py-4">
+          <summary class="cursor-pointer font-semibold text-sky-900">Counting and termination details</summary>
+          <ul class="mt-4 space-y-3 list-disc pl-5 text-sm leading-relaxed text-gray-700">
+            <li v-for="detail in project.budgetDetails" :key="detail">{{ detail }}</li>
+          </ul>
+        </details>
+      </div>
     </Section>
 
     <Section id="evaluation" title="Clutter-Bench and Evaluation" accent="blue">
       <p class="text-base md:text-lg text-gray-700 leading-relaxed">{{ project.benchmarkSummary }}</p>
+      <p class="text-sm leading-relaxed text-gray-600">{{ project.successCriterion }}</p>
       <div class="grid md:grid-cols-3 gap-5">
         <article v-for="result in project.results" :key="result.label" class="rounded-2xl border border-blue-100 bg-blue-50/40 p-5 space-y-3">
           <h3 class="text-sm font-semibold text-blue-800">{{ result.label }}</h3>
@@ -51,10 +68,46 @@
           <p class="text-sm leading-relaxed text-gray-700">{{ result.detail }}</p>
         </article>
       </div>
+      <div class="space-y-5 pt-4">
+        <h3 id="ablation-title" class="text-xl font-semibold text-gray-900">What the closed loop contributes</h3>
+        <p class="text-base leading-relaxed text-gray-700">{{ project.ablationSetup }}</p>
+        <div class="overflow-x-auto rounded-xl border border-blue-100" role="region" aria-labelledby="ablation-title" tabindex="0">
+          <table class="w-full min-w-[560px] text-sm">
+            <caption class="sr-only">Task success by clutter level with the same trained GeoGrasp policy. Each level contains 700 trials per method.</caption>
+            <thead class="bg-slate-50 text-slate-700">
+              <tr>
+                <th scope="col" class="px-5 py-4 text-left font-semibold">Variant</th>
+                <th v-for="(obstacles, index) in [2, 4, 6]" :key="obstacles" scope="col" class="px-4 py-4 text-center font-semibold">
+                  <span class="block">Level-{{ index + 1 }}</span>
+                  <span class="block pt-1 text-xs font-normal text-slate-600">{{ obstacles }} obstacles</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-blue-100">
+              <tr v-for="row in project.ablationRows" :key="row.method" :class="row.full ? 'bg-blue-50 text-blue-950 font-semibold' : 'text-gray-700'">
+                <th scope="row" class="px-5 py-4 text-left" :class="row.full ? 'font-semibold' : 'font-medium'">{{ row.method }}</th>
+                <td v-for="(value, index) in row.success" :key="index" class="px-4 py-4 text-center tabular-nums">{{ value }}%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-base leading-relaxed text-gray-700">{{ project.ablationFinding }}</p>
+        <p class="text-sm leading-relaxed text-gray-600">{{ project.ablationScope }}</p>
+      </div>
+      <div class="rounded-2xl border border-blue-100 p-5 md:p-6 space-y-4">
+        <h3 class="text-xl font-semibold text-gray-900">Sim-to-real transfer</h3>
+        <p class="text-base leading-relaxed text-gray-700">{{ project.physicalSummary }}</p>
+        <p class="text-sm leading-relaxed text-gray-600">{{ project.physicalFinding }}</p>
+      </div>
     </Section>
 
     <Section id="geograsp" title="GeoGrasp: Our Trained Grasping Skill" accent="emerald">
       <p class="text-base md:text-lg text-gray-700 leading-relaxed">{{ project.geograspSummary }}</p>
+      <div class="rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5 md:p-6 space-y-4">
+        <h3 class="text-xl font-semibold text-gray-900">Generalization to unseen geometries</h3>
+        <p class="text-base leading-relaxed text-gray-700">{{ project.generalizationProtocol }}</p>
+        <p class="text-base leading-relaxed text-gray-700">{{ project.generalizationFinding }}</p>
+      </div>
       <p class="text-sm leading-relaxed text-gray-600">The videos below illustrate grasping across the seven target categories. Apple, Cube, and Cup are training categories. Ball, Can, LEGO, and Pear are unseen categories. These demonstrations are separate from the clutter-free evaluation reported above.</p>
       <Grasp7Videos />
     </Section>
