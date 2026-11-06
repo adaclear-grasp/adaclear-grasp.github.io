@@ -1,6 +1,10 @@
 <!-- VedioTile.vue -->
 <template>
   <div class="space-y-3">
+    <div class="flex items-center justify-between gap-3 text-sm text-gray-500">
+      <span class="font-semibold text-gray-700">{{ label }}</span>
+      <span>{{ meta }}</span>
+    </div>
     <div
       v-if="status === 'ok'"
       class="rounded-2xl overflow-hidden bg-gray-900 shadow-md border-2 border-gray-100"
@@ -43,18 +47,31 @@
         </span>
         <span class="inline-flex items-center px-1 py-0.5 rounded-md
         text-base font-semibold text-gray-900 leading-snug tracking-wide">
-          {{ currentStep?.call ?? (timelineStatus === 'missing' ? 'No replay_timeline.jsonl' : '—') }}
+          {{ currentStep?.call ?? (timelineStatus === 'missing' ? 'Execution trace unavailable' : '—') }}
         </span>
       </div>
       <div v-if="currentStep?.reason" class="mt-2 text-sm leading-relaxed text-gray-600 pl-1">
         {{ currentStep.reason }}
+      </div>
+      <div v-if="recordedFeedback" class="mt-3 flex flex-wrap items-center gap-2 pl-1 text-xs">
+        <span class="font-medium text-gray-500">Recorded feedback</span>
+        <span
+          class="inline-flex rounded-full px-2.5 py-1 font-semibold"
+          :class="recordedFeedback.tone === 'error'
+            ? 'bg-amber-50 text-amber-800'
+            : recordedFeedback.tone === 'success'
+              ? 'bg-emerald-50 text-emerald-800'
+              : 'bg-slate-100 text-slate-600'"
+        >
+          {{ recordedFeedback.label }}
+        </span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, nextTick } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch, nextTick } from 'vue'
 
 type TimelineStep = {
   t_video_s?: number
@@ -84,20 +101,33 @@ const status = ref<'checking' | 'ok' | 'missing'>('checking')
 const timelineStatus = ref<'checking' | 'ok' | 'missing'>('checking')
 const steps = ref<TimelineStep[]>([])
 const currentStep = ref<TimelineStep | null>(null)
-const currentTime = ref(0)
 const isReal = computed(() => props.domain === 'real')
+// Ignore responses for a previously selected video.
+let activeRequest = 0
+
+const recordedFeedback = computed(() => {
+  const step = currentStep.value
+  if (!step) return null
+  if (step.error_code && step.error_code !== 'none') {
+    return { label: step.error_code, tone: 'error' }
+  }
+  if (step.ok === false) return { label: 'Action failed', tone: 'error' }
+  if (step.ok === true) return { label: 'Action completed', tone: 'success' }
+  if (step.error_code === 'none') return { label: 'No error reported', tone: 'neutral' }
+  return null
+})
 
 function timelineUrlFromVideo(videoUrl: string) {
   return videoUrl.replace(/\/0\.mp4$/i, '/replay_timeline.jsonl')
 }
 
-async function checkExists(url: string) {
-  status.value = 'checking'
+async function checkExists(url: string, requestId: number) {
   try {
     const res = await fetch(url, { method: 'HEAD' })
+    if (requestId !== activeRequest) return
     status.value = res.ok ? 'ok' : 'missing'
   } catch {
-    status.value = 'missing'
+    if (requestId === activeRequest) status.value = 'missing'
   }
 }
 
@@ -120,24 +150,22 @@ function parseJsonl(text: string): TimelineStep[] {
   return out
 }
 
-async function loadTimeline(videoUrl: string) {
-  timelineStatus.value = 'checking'
-  steps.value = []
-  currentStep.value = null
-
+async function loadTimeline(videoUrl: string, requestId: number) {
   const url = timelineUrlFromVideo(videoUrl)
   try {
     const res = await fetch(url)
+    if (requestId !== activeRequest) return
     if (!res.ok) {
       timelineStatus.value = 'missing'
       return
     }
     const text = await res.text()
+    if (requestId !== activeRequest) return
     const parsed = parseJsonl(text)
     steps.value = parsed
     timelineStatus.value = parsed.length ? 'ok' : 'missing'
   } catch {
-    timelineStatus.value = 'missing'
+    if (requestId === activeRequest) timelineStatus.value = 'missing'
   }
 }
 
@@ -155,15 +183,27 @@ function findCurrentStep(t: number) {
 
 function onTimeUpdate() {
   const t = videoEl.value?.currentTime ?? 0
-  currentTime.value = t
   currentStep.value = findCurrentStep(t)
 }
 
 async function refreshAll(videoUrl: string) {
-  await checkExists(videoUrl)
-  await loadTimeline(videoUrl)
+  const requestId = ++activeRequest
+  status.value = 'checking'
+  timelineStatus.value = 'checking'
+  steps.value = []
+  currentStep.value = null
+  vw.value = 16
+  vh.value = 9
 
-  if (status.value === 'ok' && videoEl.value) {
+  await Promise.all([
+    checkExists(videoUrl, requestId),
+    loadTimeline(videoUrl, requestId),
+  ])
+  if (requestId !== activeRequest) return
+  await nextTick()
+  if (requestId !== activeRequest) return
+
+  if (videoEl.value) {
     videoEl.value.load()
   }
   onTimeUpdate()
@@ -195,22 +235,17 @@ onMounted(() => {
   refreshAll(props.src)
 })
 
+onBeforeUnmount(() => {
+  activeRequest += 1
+})
+
 watch(
   () => props.src,
   (next) => {
     refreshAll(next)
   }
 )
-watch(
-  () => props.src,
-  () => {
-    nextTick(() => {
-      if (videoEl.value) {
-        videoEl.value.playbackRate = isReal.value ? 0.5 : 1.0
-      }
-    })
-  }
-)
 
 
 </script>
+

@@ -5,13 +5,14 @@
       <div class="flex items-center gap-3">
         <span class="inline-block w-1.5 h-7 rounded-full bg-indigo-500 flex-shrink-0"></span>
         <div>
-          <span class="text-xl md:text-2xl font-bold text-gray-900">{{ row.object }}</span>
+          <span class="text-xl md:text-2xl font-bold text-gray-900">{{ objectLabel }}</span>
         </div>
       </div>
 
       <div class="flex items-center gap-3">
-        <span class="text-sm font-semibold text-gray-500 whitespace-nowrap">clutter count</span>
+        <label :for="obstacleSelectId" class="text-sm font-semibold text-gray-500 whitespace-nowrap">Surrounding obstacles</label>
         <select
+          :id="obstacleSelectId"
           v-model.number="selected"
           class="text-sm font-semibold rounded-xl border-2 border-indigo-200 bg-white
                  px-4 py-2 text-indigo-700 cursor-pointer
@@ -31,7 +32,7 @@
         <VideoTile
           :domain="row.domain"
           :src="buildSrc(row.domain, row.object, selected, run)"
-          :label="`#${run}`"
+          :label="`Run #${run}`"
           :meta="`${selected} obstacles`"
         />
       </div>
@@ -42,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import VideoTile from './VideoTile.vue'
 import type { RowSpec, Obstacles } from '../content/videoGrid'
 import { OBSTACLE_OPTIONS } from '../content/videoGrid'
@@ -54,6 +55,16 @@ const props = defineProps<{
 
 const obstacleOptions = OBSTACLE_OPTIONS
 const selected = ref<Obstacles>(props.defaultObstacles ?? 2)
+const obstacleSelectId = computed(() => `obstacles-${props.row.domain}-${props.row.object}`)
+const objectLabels: Record<string, string> = {
+  apple: 'Apple', ball: 'Ball', can: 'Can', cube: 'Cube',
+  lego: 'LEGO', mug: 'Cup', pear: 'Pear',
+}
+const objectLabel = computed(() =>
+  props.row.domain === 'real' && props.row.object === 'cube'
+    ? 'Orange Cube'
+    : objectLabels[props.row.object] ?? props.row.object
+)
 
 watch(
   () => props.defaultObstacles,
@@ -65,3 +76,4 @@ watch(
 const buildSrc = (domain: 'sim' | 'real', object: string, obstacles: Obstacles, run: number) =>
   `/videos/${domain}/${object}/${obstacles}/${run}/0.mp4`
 </script>
+
