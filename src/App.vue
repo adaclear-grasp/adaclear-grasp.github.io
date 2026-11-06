@@ -91,6 +91,7 @@
             </tbody>
           </table>
         </div>
+        <p class="text-xs text-gray-500 sm:hidden">Scroll horizontally to view all clutter levels.</p>
         <p class="text-base leading-relaxed text-gray-700">{{ project.ablationFinding }}</p>
         <p class="text-sm leading-relaxed text-gray-600">{{ project.ablationScope }}</p>
       </div>

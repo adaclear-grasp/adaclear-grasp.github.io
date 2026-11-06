@@ -132,7 +132,7 @@ export const project: ProjectContent = {
     "With six obstacles, success rises from 27% with direct grasping to 41% with skill coordination and 76% with the full harness. The gain from enabling failure-triggered replanning grows from 6 percentage points at Level-1 to 35 at Level-3, supporting feedback-driven revision as clutter increases.",
 
   ablationScope:
-    "The replanning comparison includes both strategy revision and additional corrective attempts. It does not isolate the contribution of typed feedback alone.",
+    "These results evaluate strategy revision together with additional corrective attempts, without isolating the effect of typed feedback.",
 
   physicalSummary:
     "The integrated system completes 63 of 90 physical trials across 18 configurations. Success is 90%, 70%, and 50% with 2, 4, and 6 obstacles, respectively. Apple, Orange Cube, and Cup belong to categories seen during GeoGrasp training. The grasping policy transfers from simulation without fine-tuning.",
